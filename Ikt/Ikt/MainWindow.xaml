@@ -5,8 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ikt"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="476" Width="800">
     <Grid>
-
+            <TextBox Name="txtFirstName" Text="first name"  Margin="113,276,555,140" />
+        <TextBox Name="txtLastName" Text="last_name"  Margin="278,276,400,140" />
+            <TextBox Name="txtEmail" Text="email"  Margin="630,261,10,140" />
+            <TextBox Name="txtPhone" Text="phone" Margin="436,266,185,135" RenderTransformOrigin="0.5,0.5" >
+            <TextBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-0.679"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </TextBox.RenderTransform>
+        </TextBox>
+        <Button Content="Add" Name="btnAdd" Click="btnAdd_Click" Margin="655,10,31,388" />
+            <Button Content="Update" Name="btnUpdate" Click="btnUpdate_Click" Margin="648,182,24,221" />
+            <Button Content="Delete" Name="btnDelete" Click="btnDelete_Click" Margin="654,96,30,304" />
+        <DataGrid x:Name="dgContacts" AutoGenerateColumns="True" Margin="10,10,400,268"/>
     </Grid>
 </Window>
