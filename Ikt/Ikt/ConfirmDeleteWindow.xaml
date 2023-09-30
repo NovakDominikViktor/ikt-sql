@@ -1,0 +1,16 @@
+﻿<Window x:Class="Ikt.ConfirmDeleteWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Ikt"
+        mc:Ignorable="d"
+        Title="Törlés megerősítése" Height="235" Width="400">
+    <Grid>
+        <TextBlock Text="Biztosan törölni szeretné ezt az elemet?" Margin="10" VerticalAlignment="Top" />
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="10">
+            <Button Content="Mégse" Click="CancelButton_Click" Margin="5" />
+            <Button Content="Megerősítés" Click="ConfirmButton_Click" Margin="5" />
+        </StackPanel>
+    </Grid>
+</Window>

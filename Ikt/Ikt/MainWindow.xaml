@@ -7,16 +7,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="476" Width="800">
     <Grid>
-        <DataGrid x:Name="dgContacts" AutoGenerateColumns="True" Margin="10,10,10,172" />
+        <DataGrid x:Name="dgContacts" AutoGenerateColumns="True" MouseDoubleClick="DgContacts_MouseDoubleClick" Margin="10,10,10,172" />
         <StackPanel Orientation="Vertical" Margin="10,130,10,192">
-            <TextBox x:Name="txtFirstName" Margin="0,5,0,5" Text="First Name" Width="200"/>
-            <TextBox x:Name="txtLastName" Margin="0,5,0,5" Text="Last Name" Width="200"/>
-            <TextBox x:Name="txtEmail" Margin="0,5,0,5" Text="Email" Width="200"/>
-            <TextBox x:Name="txtPhone" Margin="0,5,0,5" Text="Phone" Width="200"/>
             <StackPanel Orientation="Horizontal" Width="764">
-                <Button x:Name="btnAdd" Content="Add" Click="btnAdd_Click" Width="80"/>
-                <Button x:Name="btnUpdate" Content="Update" Click="btnUpdate_Click" Width="80"/>
-                <Button x:Name="btnDelete" Content="Delete" Click="btnDelete_Click" Width="80"/>
+                <Button x:Name="btnAdd" Content="Hozzáadás" Click="btnAdd_Click" Width="80"/>
+                <Button x:Name="btnUpdate" Content="Módosítás" Click="btnUpdate_Click" Width="80"/>
+                <Button x:Name="btnDelete" Content="Törlés" Click="btnDelete_Click" Width="80"/>
             </StackPanel>
         </StackPanel>
     </Grid>

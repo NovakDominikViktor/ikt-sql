@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\ndominikviktor\Desktop\Ikt\ikt-sql\Ikt\Ikt\obj\Debug\net6.0-windows\
+G:\Downloads\ikt-sql-main\Ikt\Ikt\obj\Debug\net6.0-windows\
 Ikt
 none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
-C:\Users\ndominikviktor\Desktop\Ikt\ikt-sql\Ikt\Ikt\App.xaml
-11407045341
+G:\Downloads\ikt-sql-main\Ikt\Ikt\App.xaml
+4816449078
 
-42038209949
-2021143942395
-MainWindow.xaml;
+7-1651672247
+202949573425
+AddContactWindow.xaml;ConfirmDeleteWindow.xaml;EditContactWindow.xaml;MainWindow.xaml;
 
 False
 

@@ -22,16 +22,19 @@ namespace Ikt
     /// </summary>
         public partial class MainWindow : Window
         {
-            private MySqlConnection connection;
-            private MySqlCommand cmd;
-            private MySqlDataAdapter adapter;
-            private DataTable dataTable;
+        private MySqlConnection connection;
+        private MySqlCommand cmd;
+        private MySqlDataAdapter adapter;
+        private DataTable dataTable;
 
-            public MainWindow()
-            {
+        public MainWindow()
+        {
             InitializeComponent();
+            InitializeDatabaseConnection();
+        }
 
-  
+        private void InitializeDatabaseConnection()
+        {
             string connectionString = "Server=localhost;Database=ikt_sq;User=root;Password=;";
             connection = new MySqlConnection(connectionString);
 
@@ -44,8 +47,7 @@ namespace Ikt
                 adapter.Fill(dataTable);
                 dgContacts.ItemsSource = dataTable.DefaultView;
 
-                
-                dgContacts.MouseLeftButtonUp += DgContacts_MouseLeftButtonUp;
+                dgContacts.MouseDoubleClick += DgContacts_MouseDoubleClick;
             }
             catch (MySqlException ex)
             {
@@ -55,63 +57,38 @@ namespace Ikt
             {
                 connection.Close();
             }
-        } 
+        }
 
-        private void DgContacts_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void DgContacts_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (dgContacts.SelectedItem is DataRowView selectedRow)
             {
-      
-                txtFirstName.Text = selectedRow["first_name"].ToString();
-                txtLastName.Text = selectedRow["last_name"].ToString();
-                txtEmail.Text = selectedRow["email"].ToString();
-                txtPhone.Text = selectedRow["phone"].ToString();
-            }
-        }
+                string firstName = selectedRow["first_name"].ToString();
+                string lastName = selectedRow["last_name"].ToString();
+                string email = selectedRow["email"].ToString();
+                string phone = selectedRow["phone"].ToString();
 
-        private void btnAdd_Click(object sender, RoutedEventArgs e)
-            {
-                string insertQuery = "INSERT INTO contacts (first_name, last_name, email, phone) " +
-                                     "VALUES (@FirstName, @LastName, @Email, @Phone)";
-                MySqlCommand insertCmd = new MySqlCommand(insertQuery, connection);
+                var editContactWindow = new EditContactWindow(
+                    firstName,
+                    lastName,
+                    email,
+                    phone);
 
-                insertCmd.Parameters.AddWithValue("@FirstName", txtFirstName.Text);
-                insertCmd.Parameters.AddWithValue("@LastName", txtLastName.Text);
-                insertCmd.Parameters.AddWithValue("@Email", txtEmail.Text);
-                insertCmd.Parameters.AddWithValue("@Phone", txtPhone.Text);
-
-                try
+                if (editContactWindow.ShowDialog() == true)
                 {
-                    connection.Open();
-                    insertCmd.ExecuteNonQuery();
-                    dataTable.Clear();
-                    adapter.Fill(dataTable);
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("Hiba az adatok hozzáadásakor: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
-              
+                    string firstName2 = editContactWindow.FirstName;
+                    string lastName2 = editContactWindow.LastName;
+                    string email2 = editContactWindow.Email;
+                    string phone2 = editContactWindow.Phone;
 
-
-        }
-
-            private void btnUpdate_Click(object sender, RoutedEventArgs e)
-            {
-                if (dgContacts.SelectedItem is DataRowView selectedRow)
-                {
                     string updateQuery = "UPDATE contacts SET first_name = @FirstName, last_name = @LastName, " +
                                          "email = @Email, phone = @Phone WHERE id = @Id";
                     MySqlCommand updateCmd = new MySqlCommand(updateQuery, connection);
 
-                    updateCmd.Parameters.AddWithValue("@FirstName", txtFirstName.Text);
-                    updateCmd.Parameters.AddWithValue("@LastName", txtLastName.Text);
-                    updateCmd.Parameters.AddWithValue("@Email", txtEmail.Text);
-                    updateCmd.Parameters.AddWithValue("@Phone", txtPhone.Text);
+                    updateCmd.Parameters.AddWithValue("@FirstName", firstName2);
+                    updateCmd.Parameters.AddWithValue("@LastName", lastName2);
+                    updateCmd.Parameters.AddWithValue("@Email", email2);
+                    updateCmd.Parameters.AddWithValue("@Phone", phone2);
                     updateCmd.Parameters.AddWithValue("@Id", selectedRow["id"]);
 
                     try
@@ -129,36 +106,150 @@ namespace Ikt
                     {
                         connection.Close();
                     }
-                   
                 }
             }
+        }
+        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            var addContactWindow = new AddContactWindow();
+            addContactWindow.ShowDialog();
 
-            private void btnDelete_Click(object sender, RoutedEventArgs e)
+            if (addContactWindow.IsSaved)
             {
-                if (dgContacts.SelectedItem is DataRowView selectedRow)
+                string firstName = addContactWindow.FirstName;
+                string lastName = addContactWindow.LastName;
+                string email = addContactWindow.Email;
+                string phone = addContactWindow.Phone;
+
+                SaveNewContact(firstName, lastName, email, phone);
+            }
+        }
+
+        private void SaveNewContact(string firstName, string lastName, string email, string phone)
+        {
+            
+            string insertQuery = "INSERT INTO contacts (first_name, last_name, email, phone) " +
+                                 "VALUES (@FirstName, @LastName, @Email, @Phone)";
+            MySqlCommand insertCmd = new MySqlCommand(insertQuery, connection);
+
+            insertCmd.Parameters.AddWithValue("@FirstName", firstName);
+            insertCmd.Parameters.AddWithValue("@LastName", lastName);
+            insertCmd.Parameters.AddWithValue("@Email", email);
+            insertCmd.Parameters.AddWithValue("@Phone", phone);
+
+            try
+            {
+                connection.Open();
+                insertCmd.ExecuteNonQuery();
+                dataTable.Clear();
+                adapter.Fill(dataTable);
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show("Hiba az adatok hozzáadásakor: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+        private void btnUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgContacts.SelectedItem is DataRowView selectedRow)
+            {
+                string firstName = selectedRow["first_name"].ToString();
+                string lastName = selectedRow["last_name"].ToString(); ;
+                string email = selectedRow["email"].ToString(); ;
+                string phone = selectedRow["phone"].ToString(); ;
+
+                var editContactWindow = new EditContactWindow(
+                    firstName,
+                    lastName,
+                    email,
+                    phone);
+
+
+                if (editContactWindow.ShowDialog() == true)
                 {
-                    string deleteQuery = "DELETE FROM contacts WHERE id = @Id";
-                    MySqlCommand deleteCmd = new MySqlCommand(deleteQuery, connection);
-                    deleteCmd.Parameters.AddWithValue("@Id", selectedRow["id"]);
+                    string firstName2 = editContactWindow.FirstName;
+                    string lastName2 = editContactWindow.LastName;
+                    string email2 = editContactWindow.Email;
+                    string phone2 = editContactWindow.Phone;
+
+                    string updateQuery = "UPDATE contacts SET first_name = @FirstName, last_name = @LastName, " +
+                                         "email = @Email, phone = @Phone WHERE id = @Id";
+                    MySqlCommand updateCmd = new MySqlCommand(updateQuery, connection);
+
+                    updateCmd.Parameters.AddWithValue("@FirstName", firstName2);
+                    updateCmd.Parameters.AddWithValue("@LastName", lastName2);
+                    updateCmd.Parameters.AddWithValue("@Email", email2);
+                    updateCmd.Parameters.AddWithValue("@Phone", phone2);
+                    updateCmd.Parameters.AddWithValue("@Id", selectedRow["id"]);
 
                     try
                     {
                         connection.Open();
-                        deleteCmd.ExecuteNonQuery();
+                        updateCmd.ExecuteNonQuery();
                         dataTable.Clear();
                         adapter.Fill(dataTable);
                     }
                     catch (MySqlException ex)
                     {
-                        MessageBox.Show("Hiba az adatok törlésekor: " + ex.Message);
+                        MessageBox.Show("Hiba az adatok frissítésekor: " + ex.Message);
                     }
                     finally
                     {
                         connection.Close();
                     }
                 }
-                
             }
-
         }
+
+
+
+
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgContacts.SelectedItem is DataRowView selectedRow)
+            {
+               
+                var confirmWindow = new ConfirmDeleteWindow();
+                confirmWindow.ShowDialog();
+
+               
+                if (confirmWindow.IsConfirmed)
+                {
+                    DeleteContact(Convert.ToInt32(selectedRow["id"]));
+                }
+            }
+        }
+
+        private void DeleteContact(int contactId)
+        {
+           
+            string deleteQuery = "DELETE FROM contacts WHERE id = @Id";
+            MySqlCommand deleteCmd = new MySqlCommand(deleteQuery, connection);
+            deleteCmd.Parameters.AddWithValue("@Id", contactId);
+
+            try
+            {
+                connection.Open();
+                deleteCmd.ExecuteNonQuery();
+                dataTable.Clear();
+                adapter.Fill(dataTable);
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show("Hiba az adatok törlésekor: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+
     }
+}
